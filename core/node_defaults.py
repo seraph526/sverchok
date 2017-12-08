@@ -23,15 +23,16 @@ import importlib.util as getutil
 
 import bpy
 import sverchok
+# from sverchok.utils.logging import debug, info
 
 node_default_dict = {}
 node_default_functions = {}
 
+info = print
+debug = print
 
 def register_defaults():
-    # print('called')
     node_default_dict.update(get_dict())
-    # print('____', node_default_dict)
 
 
 def get_dict():
@@ -42,7 +43,7 @@ def get_dict():
 
     if os.path.exists(path_to_defaults):
         with open(path_to_defaults) as d:
-            print('loading default dict..')
+            # debug('loading default dict..')
             my_dict = ''.join(d.readlines())
             return ast.literal_eval(my_dict)
 
@@ -99,5 +100,5 @@ def set_defaults_if_defined(node):
         try:
             got_function(node)
         except Exception as err:
-            print('failed to load', node.bl_idname, '\'s custom default script..')
-            print('reason: ', repr(err))
+            info('failed to load', node.bl_idname, '\'s custom default script..')
+            info('reason: ', repr(err))
