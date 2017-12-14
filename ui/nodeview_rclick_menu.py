@@ -149,13 +149,68 @@ class SvNodeviewRClickMenu(bpy.types.Menu):
         if node and len(node.outputs):
             layout.operator("node.sv_deligate_operator", text="Connect stethoscope").fn = "stethoscope"
 
+        layout.separator()
+        layout.menu("NODEVIEW_MT_Dynamic_XNodes_Menu", text='X Nodes')
+
+
+class SvNVXNodeItems(bpy.types.PropertyGroup):
+    xnode = bpy.props.StringProperty(name="line to eval", default="....")
+
+
+class SvXNodesSubmenu(bpy.types.Menu):
+    bl_label = "Submenu Properties"
+    bl_idname = "node.xnode_selector"
+
+    def draw(self, context):
+        layout = self.layout
+
+        row = layout.row()
+        row.prop(context.my_folder, "xnode")
+
+def add_xnode_items():
+    xn = bpy.context.scene.xnode_test
+    xn.add().xnode = "fkb"
+    xn.add().xnode = "fkb2"
+    xn.add().xnode = "fkb3"
+
+
+class SvNodeviewXNodesMenu(bpy.types.Menu):
+    bl_label = "XNodes"
+    bl_idname = "NODEVIEW_MT_Dynamic_XNodes_Menu"
+
+    @classmethod
+    def poll(cls, context):
+        tree_type = context.space_data.tree_type
+        return tree_type in sv_tree_types
+
+    def draw(self, context):
+        layout = self.layout
+        tree = context.space_data.edit_tree
+        nodes = tree.nodes
+
+        for fake_item in context.scene.xnode_test:
+            row = layout.row()
+            row.context_pointer_set("my_folder", fake_item)
+            row.menu(SvXNodesSubmenu.bl_idname, text=fake_item.xnode)
 
 
 def register():
+    bpy.utils.register_class(SvNVXNodeItems)
+    bpy.types.Scene.xnode_test = bpy.props.CollectionProperty(type=SvNVXNodeItems)
+
+    add_xnode_items()
+
+    bpy.utils.register_class(SvXNodesSubmenu)
+
+
     bpy.utils.register_class(SvGenericDeligationOperator)
+    bpy.utils.register_class(SvNodeviewXNodesMenu)
     bpy.utils.register_class(SvNodeviewRClickMenu)
 
 
 def unregister():
     bpy.utils.unregister_class(SvNodeviewRClickMenu)
+    bpy.utils.unregister_class(SvNodeviewXNodesMenu)
     bpy.utils.unregister_class(SvGenericDeligationOperator)
+    bpy.utils.unregister_class(SvNVXNodeItems)
+    bpy.utils.unregister_class(SvXNodesSubmenu)
