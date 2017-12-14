@@ -251,6 +251,7 @@
     SvObjInLite
     SvObjEdit
     SvFrameInfoNodeMK2
+    SvLampOutNode
     SvEmptyOutNode
     SvInstancerNode
     SvDupliInstancesMK4
