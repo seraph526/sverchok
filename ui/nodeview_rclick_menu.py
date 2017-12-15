@@ -198,7 +198,7 @@ def register():
     bpy.utils.register_class(SvNVXNodeItems)
     bpy.types.Scene.xnode_test = bpy.props.CollectionProperty(type=SvNVXNodeItems)
 
-    add_xnode_items()
+    # add_xnode_items()
 
     bpy.utils.register_class(SvXNodesSubmenu)
 
